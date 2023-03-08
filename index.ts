@@ -1,8 +1,8 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express } from 'express';
 import dotenv from 'dotenv';
-import {router} from './users';
+import { router } from './users';
 import { sequelize } from './config/config';
-import bodyParser from "body-parser";
+import bodyParser from 'body-parser';
 
 dotenv.config();
 
@@ -10,13 +10,17 @@ const app: Express = express();
 const port = process.env.PORT;
 
 app.use(bodyParser.json());
+app.get('/', (req, res) => {
+  res.json('Server Running!');
+});
+
 app.use('/users', router);
 
 const start = async (): Promise<void> => {
   try {
     await sequelize.sync();
-    app.listen(3000, () => {
-      console.log("Server started on port 3000");
+    app.listen(port, () => {
+      console.log(`Server started on port ${port}`);
     });
   } catch (error) {
     console.error(error);
@@ -25,5 +29,3 @@ const start = async (): Promise<void> => {
 };
 
 void start();
-
-

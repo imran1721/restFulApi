@@ -1,20 +1,20 @@
-import { Model, Table, Column, AllowNull, AutoIncrement, PrimaryKey, NotEmpty, DataType, Sequelize } from 'sequelize-typescript';
-import { v4 as uuidv4 } from 'uuid';
-// export interface UserI {
-//   id?: number | null;
-//   firstName?: string;
-//   lastName?: string;
-//   email?: string;
-//   phone?: string;
-// }
+import {
+  Model,
+  Table,
+  Column,
+  AutoIncrement,
+  NotEmpty,
+  DataType,
+  Unique,
+} from 'sequelize-typescript';
 
-@Table({ tableName: 'users', timestamps: true })
+@Table({tableName: 'users', timestamps: true})
 export default class User extends Model {
+  @AutoIncrement
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     allowNull: false,
     primaryKey: true,
-    defaultValue: uuidv4()
   })
   id?: number | null;
 
@@ -33,9 +33,13 @@ export default class User extends Model {
   lastName?: string;
 
   @NotEmpty
+  @Unique
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    validate: {
+      isEmail: {msg: 'Invalid Email!'},
+    },
   })
   email?: string;
 
@@ -43,6 +47,19 @@ export default class User extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: false,
+  })
+  password?: string;
+
+  @NotEmpty
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    validate: {
+      is: {
+        args: ['^[0-9]{10}$'],
+        msg: 'Incorrect Phone number, please try again!',
+      },
+    },
   })
   phone?: string;
 }
